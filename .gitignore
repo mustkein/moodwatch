@@ -3,7 +3,7 @@
 *.iml
 .vscode/
 .eclipse/
-local.tools/
+CLAUDE.md
 
 # Build
 target/
