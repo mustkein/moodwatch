@@ -3,7 +3,7 @@
 *.iml
 .vscode/
 .eclipse/
-CLAUDE.md
+.claude/
 
 # Build
 target/
@@ -25,6 +25,10 @@ logs/
 # Environment
 .env
 *.env.local
+
+# Local notes
+NOTES.md
+.cache/
 
 # OS
 .DS_Store
