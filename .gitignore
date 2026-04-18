@@ -1,0 +1,31 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+.eclipse/
+local.tools/
+
+# Build
+target/
+build/
+*.class
+*.jar
+out/
+
+# Android
+*.apk
+*.aab
+local.properties
+.gradle/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+*.env.local
+
+# OS
+.DS_Store
+Thumbs.db
