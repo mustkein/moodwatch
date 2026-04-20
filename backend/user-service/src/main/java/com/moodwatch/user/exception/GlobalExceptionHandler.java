@@ -3,6 +3,7 @@ package com.moodwatch.user.exception;
 import com.moodwatch.user.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,6 +32,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleExternalApi(ExternalApiException ex) {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(ApiResponse.fail("EXTERNAL_API_ERROR", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiResponse<?>> handleConflict(ConflictException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.fail("CONFLICT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(e -> e.getField() + " " + e.getDefaultMessage())
+                .orElse("validation failed");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.fail("VALIDATION_ERROR", message));
     }
 
     @ExceptionHandler(Exception.class)
