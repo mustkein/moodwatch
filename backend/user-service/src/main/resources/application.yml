@@ -18,6 +18,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      password: ${REDIS_PASSWORD:}
+
 jwt:
   secret: ${JWT_SECRET}
   access-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:15}
