@@ -2,6 +2,8 @@ package com.moodwatch.user.service;
 
 import com.moodwatch.user.dto.LoginRequest;
 import com.moodwatch.user.dto.LoginResponse;
+import com.moodwatch.user.dto.RefreshRequest;
+import com.moodwatch.user.dto.RefreshResponse;
 import com.moodwatch.user.dto.RegisterRequest;
 import com.moodwatch.user.dto.UserResponse;
 import com.moodwatch.user.entity.User;
@@ -10,6 +12,8 @@ import com.moodwatch.user.exception.ConflictException;
 import com.moodwatch.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -56,5 +60,22 @@ public class AuthService {
         refreshTokenStore.save(user.getId(), refreshToken, jwtService.getRefreshTtlDays());
 
         return new LoginResponse(accessToken, refreshToken, "Bearer", jwtService.getAccessTokenExpirySeconds());
+    }
+
+    public RefreshResponse refresh(RefreshRequest req) {
+        if (!jwtService.isTokenValid(req.refreshToken())) {
+            throw new AuthException("invalid refresh token");
+        }
+        UUID userId = jwtService.extractUserId(req.refreshToken());
+        String stored = refreshTokenStore.find(userId)
+                .orElseThrow(() -> new AuthException("invalid refresh token"));
+        if (!stored.equals(req.refreshToken())) {
+            throw new AuthException("invalid refresh token");
+        }
+        String username = userRepo.findById(userId)
+                .orElseThrow(() -> new AuthException("invalid refresh token"))
+                .getUsername();
+        String newAccessToken = jwtService.generateAccessToken(userId, username);
+        return new RefreshResponse(newAccessToken, "Bearer", jwtService.getAccessTokenExpirySeconds());
     }
 }

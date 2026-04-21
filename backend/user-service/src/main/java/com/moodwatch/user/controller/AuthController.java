@@ -3,6 +3,8 @@ package com.moodwatch.user.controller;
 import com.moodwatch.user.dto.ApiResponse;
 import com.moodwatch.user.dto.LoginRequest;
 import com.moodwatch.user.dto.LoginResponse;
+import com.moodwatch.user.dto.RefreshRequest;
+import com.moodwatch.user.dto.RefreshResponse;
 import com.moodwatch.user.dto.RegisterRequest;
 import com.moodwatch.user.dto.UserResponse;
 import com.moodwatch.user.service.AuthService;
@@ -30,6 +32,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<RefreshResponse>> refresh(@Valid @RequestBody RefreshRequest request) {
+        RefreshResponse response = authService.refresh(request);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 }
