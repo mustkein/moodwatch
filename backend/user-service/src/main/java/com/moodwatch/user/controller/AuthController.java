@@ -7,6 +7,7 @@ import com.moodwatch.user.dto.RefreshRequest;
 import com.moodwatch.user.dto.RefreshResponse;
 import com.moodwatch.user.dto.RegisterRequest;
 import com.moodwatch.user.dto.UserResponse;
+import com.moodwatch.user.exception.AuthException;
 import com.moodwatch.user.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -39,5 +40,18 @@ public class AuthController {
     public ResponseEntity<ApiResponse<RefreshResponse>> refresh(@Valid @RequestBody RefreshRequest request) {
         RefreshResponse response = authService.refresh(request);
         return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        authService.logout(extractBearer(authHeader));
+        return ResponseEntity.noContent().build();
+    }
+
+    static String extractBearer(String header) {
+        if (header == null || !header.startsWith("Bearer ")) {
+            throw new AuthException("invalid token");
+        }
+        return header.substring(7);
     }
 }

@@ -62,6 +62,14 @@ public class AuthService {
         return new LoginResponse(accessToken, refreshToken, "Bearer", jwtService.getAccessTokenExpirySeconds());
     }
 
+    public void logout(String accessToken) {
+        if (!jwtService.isTokenValid(accessToken)) {
+            throw new AuthException("invalid token");
+        }
+        UUID userId = jwtService.extractUserId(accessToken);
+        refreshTokenStore.delete(userId);
+    }
+
     public RefreshResponse refresh(RefreshRequest req) {
         if (!jwtService.isTokenValid(req.refreshToken())) {
             throw new AuthException("invalid refresh token");
