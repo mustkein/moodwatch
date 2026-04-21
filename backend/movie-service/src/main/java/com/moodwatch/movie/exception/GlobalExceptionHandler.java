@@ -1,6 +1,7 @@
 package com.moodwatch.movie.exception;
 
 import com.moodwatch.movie.dto.ApiResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +34,16 @@ public class GlobalExceptionHandler {
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .findFirst()
                 .map(e -> e.getField() + " " + e.getDefaultMessage())
+                .orElse("validation failed");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.fail("VALIDATION_ERROR", message));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<?>> handleConstraintViolation(ConstraintViolationException ex) {
+        String message = ex.getConstraintViolations().stream()
+                .findFirst()
+                .map(v -> v.getPropertyPath() + " " + v.getMessage())
                 .orElse("validation failed");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.fail("VALIDATION_ERROR", message));
