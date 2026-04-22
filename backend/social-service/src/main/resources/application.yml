@@ -9,6 +9,12 @@ spring:
     username: ${POSTGRES_USER:sa}
     password: ${POSTGRES_PASSWORD:}
     driver-class-name: org.postgresql.Driver
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: 27017
+      database: moodwatch
+
   jpa:
     hibernate:
       ddl-auto: validate

@@ -16,9 +16,11 @@ import java.util.UUID;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final FeedService feedService;
 
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewService(ReviewRepository reviewRepository, FeedService feedService) {
         this.reviewRepository = reviewRepository;
+        this.feedService = feedService;
     }
 
     public ReviewResponse create(UUID userId, ReviewRequest request) {
@@ -28,7 +30,9 @@ public class ReviewService {
         review.setRating(request.rating());
         review.setText(request.text());
         review.setMoodTag(request.moodTag());
-        return toResponse(reviewRepository.save(review));
+        ReviewResponse response = toResponse(reviewRepository.save(review));
+        feedService.recordReview(userId, request.movieId(), request.rating(), request.text());
+        return response;
     }
 
     public PagedResult<ReviewResponse> getByMovie(Long movieId, int page) {
