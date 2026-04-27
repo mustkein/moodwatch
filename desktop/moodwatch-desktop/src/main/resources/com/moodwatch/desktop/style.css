@@ -11,3 +11,52 @@
     -fx-font-size: 32px;
     -fx-font-weight: bold;
 }
+
+/* Login form */
+.login-box {
+    -fx-background-color: #16213e;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 4);
+    -fx-max-width: 400;
+    -fx-max-height: 500;
+}
+
+.input-field {
+    -fx-background-color: #0f3460;
+    -fx-background-radius: 6;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #8899aa;
+    -fx-border-color: #1a4a7a;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 10 14;
+    -fx-font-size: 14px;
+}
+
+.input-field:focused {
+    -fx-border-color: #e94560;
+}
+
+.login-button {
+    -fx-background-color: #e94560;
+    -fx-background-radius: 6;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0;
+    -fx-cursor: hand;
+}
+
+.login-button:hover {
+    -fx-background-color: #c73652;
+}
+
+.login-button:disabled {
+    -fx-opacity: 0.6;
+}
+
+.error-label {
+    -fx-text-fill: #e94560;
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+}

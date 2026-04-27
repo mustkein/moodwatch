@@ -9,8 +9,8 @@ public class MoodWatchApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
-        Scene scene = new Scene(loader.load(), 1000, 700);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
+        Scene scene = new Scene(loader.load(), 480, 560);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         stage.setTitle("MoodWatch");
         stage.setScene(scene);
