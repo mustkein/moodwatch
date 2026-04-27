@@ -1,0 +1,13 @@
+.root {
+    -fx-background-color: #1a1a2e;
+}
+
+.label {
+    -fx-text-fill: #ffffff;
+}
+
+.app-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
