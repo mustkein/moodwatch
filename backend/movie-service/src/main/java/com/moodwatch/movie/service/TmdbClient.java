@@ -24,16 +24,26 @@ public class TmdbClient {
     }
 
     public PagedResult<MovieSummary> search(String query, int page) {
-        TmdbSearchResponse response = webClient.get()
-                .uri(u -> u.path("/search/movie")
-                        .queryParam("api_key", apiKey)
-                        .queryParam("query", query)
-                        .queryParam("page", page)
-                        .build())
-                .retrieve()
-                .bodyToMono(TmdbSearchResponse.class)
-                .onErrorMap(e -> new ExternalApiException("TMDB request failed: " + e.getMessage()))
-                .block();
+        int tmdbPage = page < 1 ? 1 : page;
+        System.err.println("[TMDB] search called — query=\"" + query + "\" page=" + tmdbPage);
+        TmdbSearchResponse response;
+        try {
+            response = webClient.get()
+                    .uri(u -> u.path("/search/movie")
+                            .queryParam("api_key", apiKey)
+                            .queryParam("query", query)
+                            .queryParam("page", tmdbPage)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(TmdbSearchResponse.class)
+                    .onErrorMap(e -> new ExternalApiException("TMDB request failed: " + e.getMessage()))
+                    .block();
+            System.err.println("[TMDB] response received — page=" + (response != null ? response.page() : "null")
+                    + " totalResults=" + (response != null ? response.totalResults() : "null"));
+        } catch (Exception e) {
+            System.err.println("[TMDB] exception: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+            throw e;
+        }
 
         if (response == null) {
             throw new ExternalApiException("TMDB returned empty response");

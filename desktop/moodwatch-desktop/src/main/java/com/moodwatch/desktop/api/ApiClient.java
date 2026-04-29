@@ -19,6 +19,7 @@ public class ApiClient {
     private final String baseUrl = "http://localhost:8081";
 
     private String authToken;
+    private String currentUsername;
 
     private ApiClient() {}
 
@@ -26,11 +27,12 @@ public class ApiClient {
         return INSTANCE;
     }
 
-    public String getAuthToken() {
-        return authToken;
-    }
+    public String getAuthToken() { return authToken; }
+    public String getUsername() { return currentUsername; }
 
     public record LoginResponse(String accessToken, String refreshToken) {}
+    public record MovieSummary(Long tmdbId, String title, Integer year, String posterUrl, Double rating, String overview) {}
+    public record PagedResult<T>(java.util.List<T> items, int page, int totalPages, long totalItems) {}
 
     private record ApiResponse<T>(boolean success, T data, String error) {}
 
@@ -64,6 +66,7 @@ public class ApiClient {
                     new TypeReference<ApiResponse<LoginResponse>>() {}
             );
             this.authToken = result.data().accessToken();
+            this.currentUsername = username;
             return result.data();
 
         } catch (RuntimeException e) {
@@ -71,6 +74,37 @@ public class ApiClient {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Server error", e);
+        }
+    }
+
+    public java.util.List<MovieSummary> searchMovies(String query, int page) {
+        System.out.println("[API] searchMovies called with query=" + query + " page=" + page);
+        try {
+            String encoded = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
+            String url = "http://localhost:8083/api/movies/search?q=" + encoded + "&page=" + page;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Authorization", "Bearer " + authToken)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new RuntimeException("Search failed: " + response.statusCode());
+            }
+
+            ApiResponse<PagedResult<MovieSummary>> result = mapper.readValue(
+                    response.body(),
+                    new TypeReference<ApiResponse<PagedResult<MovieSummary>>>() {}
+            );
+            return result.data() != null ? result.data().items() : java.util.List.of();
+
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Search error", e);
         }
     }
 }
