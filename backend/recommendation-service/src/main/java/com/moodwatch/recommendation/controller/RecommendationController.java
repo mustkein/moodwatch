@@ -22,8 +22,9 @@ public class RecommendationController {
 
     @PostMapping("/mood")
     public ResponseEntity<ApiResponse<RecommendationResponse>> recommend(
-            @RequestHeader("X-User-Id") UUID userId,
+            @RequestHeader(value = "X-User-Id", required = false) UUID userId,
             @Valid @RequestBody RecommendationRequest request) {
+        System.err.println("[Rec] request received: " + request);
         return ResponseEntity.ok(ApiResponse.ok(recommendationService.recommend(userId, request)));
     }
 }

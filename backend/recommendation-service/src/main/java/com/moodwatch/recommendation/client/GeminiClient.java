@@ -31,20 +31,28 @@ public class GeminiClient {
                 "generationConfig", Map.of("responseMimeType", "application/json")
         );
 
+        System.err.println("[Gemini] prompt:\n" + prompt);
+
         try {
-            Map<?, ?> response = webClient.post()
+            String rawBody = webClient.post()
                     .uri("/models/{model}:generateContent?key={key}", model, apiKey)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(body)
                     .retrieve()
-                    .bodyToMono(Map.class)
+                    .bodyToMono(String.class)
                     .block();
+
+            System.err.println("[Gemini] response:\n" + rawBody);
+
+            Map<?, ?> response = new com.fasterxml.jackson.databind.ObjectMapper()
+                    .readValue(rawBody, Map.class);
 
             List<?> candidates = (List<?>) response.get("candidates");
             Map<?, ?> content = (Map<?, ?>) ((Map<?, ?>) candidates.get(0)).get("content");
             List<?> parts = (List<?>) content.get("parts");
             return (String) ((Map<?, ?>) parts.get(0)).get("text");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ExternalApiException("gemini unavailable");
         }
     }

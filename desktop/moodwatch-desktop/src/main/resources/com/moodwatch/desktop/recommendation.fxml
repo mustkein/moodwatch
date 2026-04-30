@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.moodwatch.desktop.controller.RecommendationController"
+      styleClass="rec-view" spacing="16" fillWidth="true">
+
+    <Label text="Mood Bazlı Öneri" styleClass="section-title"/>
+
+    <TextField fx:id="moodInput"
+               promptText="Nasıl hissediyorsunuz? Örn: üzgünüm, enerjik hissediyorum..."
+               styleClass="mood-input" editable="true" focusTraversable="true"/>
+
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <Label text="Min Puan:"/>
+        <Slider fx:id="minRatingSlider" min="0" max="10" value="0"
+                showTickMarks="true" showTickLabels="true" majorTickUnit="5"
+                HBox.hgrow="ALWAYS"/>
+        <Label fx:id="minRatingLabel" text="0.0" minWidth="32"/>
+        <Label text="Max Süre (dk):"/>
+        <TextField fx:id="maxRuntimeField" promptText="İsteğe bağlı"
+                   styleClass="input-field" prefWidth="110"/>
+    </HBox>
+
+    <Button fx:id="getRecsButton" text="Öneri Al"
+            styleClass="rec-button" onAction="#onGetRecommendations"
+            maxWidth="Infinity"/>
+
+    <ListView fx:id="resultsList" styleClass="results-list" VBox.vgrow="ALWAYS"/>
+
+    <Label fx:id="errorLabel" styleClass="error-label" visible="false" managed="false"/>
+
+</VBox>

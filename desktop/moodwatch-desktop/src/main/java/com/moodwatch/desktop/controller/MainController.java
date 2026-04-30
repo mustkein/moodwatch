@@ -30,7 +30,9 @@ public class MainController {
     }
 
     @FXML
-    private void onNavOneriler() {}
+    private void onNavOneriler() {
+        loadView("recommendation.fxml");
+    }
 
     @FXML
     private void onNavFeed() {}

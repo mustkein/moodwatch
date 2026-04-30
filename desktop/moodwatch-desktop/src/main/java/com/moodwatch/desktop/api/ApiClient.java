@@ -20,6 +20,7 @@ public class ApiClient {
 
     private String authToken;
     private String currentUsername;
+    private Long userId;
 
     private ApiClient() {}
 
@@ -29,10 +30,13 @@ public class ApiClient {
 
     public String getAuthToken() { return authToken; }
     public String getUsername() { return currentUsername; }
+    public Long getUserId() { return userId; }
 
-    public record LoginResponse(String accessToken, String refreshToken) {}
+    public record LoginResponse(String accessToken, String refreshToken, Long userId) {}
     public record MovieSummary(Long tmdbId, String title, Integer year, String posterUrl, Double rating, String overview) {}
     public record PagedResult<T>(java.util.List<T> items, int page, int totalPages, long totalItems) {}
+    public record RecommendationItem(String title, String reason, Double rating, String year) {}
+    public record RecommendationResponse(java.util.List<RecommendationItem> items) {}
 
     private record ApiResponse<T>(boolean success, T data, String error) {}
 
@@ -67,6 +71,7 @@ public class ApiClient {
             );
             this.authToken = result.data().accessToken();
             this.currentUsername = username;
+            this.userId = result.data().userId();
             return result.data();
 
         } catch (RuntimeException e) {
@@ -105,6 +110,45 @@ public class ApiClient {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Search error", e);
+        }
+    }
+
+    public java.util.List<RecommendationItem> getRecommendations(String mood, double minRating, Integer maxRuntime) {
+        try {
+            java.util.Map<String, Object> bodyMap = new java.util.HashMap<>();
+            bodyMap.put("mood", mood);
+            bodyMap.put("minRating", minRating);
+            if (maxRuntime != null) bodyMap.put("maxRuntime", maxRuntime);
+
+            String body = mapper.writeValueAsString(bodyMap);
+
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8084/api/recommendations/mood"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + authToken);
+            if (userId != null) builder.header("X-User-Id", String.valueOf(userId));
+
+            HttpRequest request = builder
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+
+            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new RuntimeException("Öneri alınamadı: " + response.statusCode());
+            }
+
+            ApiResponse<RecommendationResponse> result = mapper.readValue(
+                    response.body(),
+                    new TypeReference<ApiResponse<RecommendationResponse>>() {}
+            );
+            if (result.data() == null || result.data().items() == null) return java.util.List.of();
+            return result.data().items();
+
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Recommendation error", e);
         }
     }
 }
