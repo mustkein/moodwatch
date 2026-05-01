@@ -16,7 +16,7 @@ public class ApiClient {
     private final HttpClient http = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private final String baseUrl = "http://localhost:8081";
+    private final String baseUrl = "http://localhost:8080";
 
     private String authToken;
     private String currentUsername;
@@ -86,7 +86,7 @@ public class ApiClient {
         System.out.println("[API] searchMovies called with query=" + query + " page=" + page);
         try {
             String encoded = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
-            String url = "http://localhost:8083/api/movies/search?q=" + encoded + "&page=" + page;
+            String url = "http://localhost:8080/api/movies/search?q=" + encoded + "&page=" + page;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
