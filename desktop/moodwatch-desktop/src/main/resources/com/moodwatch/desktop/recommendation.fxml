@@ -1,37 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
+<HBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.moodwatch.desktop.controller.RecommendationController"
-      styleClass="rec-view" spacing="16" fillWidth="true">
+      styleClass="rec-view"
+      fillHeight="true">
 
-    <Label text="Mood Bazlı Öneri" styleClass="section-title"/>
+    <!-- LEFT (40%): settings panel -->
+    <VBox styleClass="rec-settings" spacing="20">
+        <padding><Insets top="32" right="28" bottom="32" left="28"/></padding>
 
-    <TextField fx:id="moodInput"
-               promptText="Nasıl hissediyorsunuz? Örn: üzgünüm, enerjik hissediyorum..."
-               styleClass="mood-input" editable="true" focusTraversable="true"/>
+        <Label text="Mood'unu Anlat" styleClass="rec-settings-title"/>
 
-    <HBox spacing="12" alignment="CENTER_LEFT">
-        <Label text="Min Puan:"/>
-        <Slider fx:id="minRatingSlider" min="0" max="10" value="0"
-                showTickMarks="true" showTickLabels="true" majorTickUnit="5"
-                HBox.hgrow="ALWAYS"/>
-        <Label fx:id="minRatingLabel" text="0.0" minWidth="32"/>
-        <Label text="Max Süre (dk):"/>
-        <TextField fx:id="maxRuntimeField" promptText="İsteğe bağlı"
-                   styleClass="input-field" prefWidth="110"/>
-    </HBox>
+        <TextArea fx:id="moodInput"
+                  promptText="Nasıl hissediyorsun? Örn: enerjik, üzgün, macera arıyorum..."
+                  styleClass="mood-textarea"
+                  prefHeight="120" wrapText="true"/>
 
-    <Button fx:id="getRecsButton" text="Öneri Al"
-            styleClass="rec-button" onAction="#onGetRecommendations"
-            maxWidth="Infinity"/>
+        <!-- Filters card -->
+        <VBox styleClass="filter-card" spacing="14">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
-    <ListView fx:id="resultsList" styleClass="results-list" VBox.vgrow="ALWAYS"/>
+            <Label text="FİLTRELER" styleClass="filter-title"/>
 
-    <Label fx:id="errorLabel" styleClass="error-label" visible="false" managed="false"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Min Puan" minWidth="70"/>
+                <Slider fx:id="minRatingSlider" min="0" max="10" value="0"
+                        showTickMarks="true" showTickLabels="true" majorTickUnit="5"
+                        HBox.hgrow="ALWAYS"/>
+                <Label fx:id="minRatingLabel" text="0.0" styleClass="filter-value" minWidth="32"/>
+            </HBox>
 
-</VBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Max Süre (dk)" minWidth="70"/>
+                <TextField fx:id="maxRuntimeField" promptText="İsteğe bağlı"
+                           styleClass="input-field" HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
+
+        <Button fx:id="getRecsButton" text="Önerileri Getir"
+                styleClass="primary-button"
+                onAction="#onGetRecommendations" maxWidth="Infinity"/>
+
+        <Label fx:id="errorLabel" styleClass="error-label"
+               visible="false" managed="false" wrapText="true"/>
+    </VBox>
+
+    <!-- RIGHT (60%): results area -->
+    <VBox styleClass="rec-results" spacing="16" HBox.hgrow="ALWAYS">
+        <padding><Insets top="32" right="28" bottom="32" left="28"/></padding>
+
+        <Label text="Sana özel öneriler" styleClass="rec-results-title"/>
+
+        <ListView fx:id="resultsList" styleClass="rec-list" VBox.vgrow="ALWAYS"/>
+    </VBox>
+
+</HBox>

@@ -45,7 +45,7 @@ public class LoginController {
     private void loadMainView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/moodwatch/desktop/main.fxml"));
-            Scene scene = new Scene(loader.load(), 1000, 700);
+            Scene scene = new Scene(loader.load(), 1200, 750);
             scene.getStylesheets().add(getClass().getResource("/com/moodwatch/desktop/style.css").toExternalForm());
             MainController controller = loader.getController();
             controller.setUsername(ApiClient.getInstance().getUsername());

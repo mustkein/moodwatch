@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.moodwatch.desktop.controller.ProfileController"
+      styleClass="profile-view"
+      alignment="TOP_CENTER"
+      spacing="24"
+      fillWidth="true">
+
+    <!-- Avatar circle -->
+    <StackPane prefWidth="96" prefHeight="96" maxWidth="96" maxHeight="96">
+        <Circle radius="48.0" styleClass="profile-avatar-circle"/>
+        <Label fx:id="avatarInitial" styleClass="avatar-initial-large"/>
+    </StackPane>
+
+    <!-- Username -->
+    <Label fx:id="profileUsername" styleClass="profile-username"/>
+
+    <!-- Stats row -->
+    <HBox styleClass="stats-row" spacing="48" alignment="CENTER">
+        <VBox alignment="CENTER" spacing="4">
+            <Label text="12" styleClass="stat-number"/>
+            <Label text="izlendi" styleClass="stat-label-sm"/>
+        </VBox>
+        <VBox alignment="CENTER" spacing="4">
+            <Label text="5" styleClass="stat-number"/>
+            <Label text="inceleme" styleClass="stat-label-sm"/>
+        </VBox>
+        <VBox alignment="CENTER" spacing="4">
+            <Label text="3" styleClass="stat-number"/>
+            <Label text="takipçi" styleClass="stat-label-sm"/>
+        </VBox>
+    </HBox>
+
+    <!-- Recent activity -->
+    <Label text="Son Aktivite" styleClass="profile-section-title"/>
+    <Label text="Henüz aktivite yok" styleClass="profile-empty"/>
+
+</VBox>

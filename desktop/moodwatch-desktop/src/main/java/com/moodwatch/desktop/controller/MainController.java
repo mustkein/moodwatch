@@ -13,6 +13,7 @@ import java.io.IOException;
 public class MainController {
 
     @FXML private Label usernameLabel;
+    @FXML private Label navAvatarLabel;
     @FXML private StackPane centerPane;
 
     @FXML
@@ -22,6 +23,9 @@ public class MainController {
 
     public void setUsername(String username) {
         usernameLabel.setText(username != null ? username : "");
+        if (username != null && !username.isEmpty()) {
+            navAvatarLabel.setText(String.valueOf(Character.toUpperCase(username.charAt(0))));
+        }
     }
 
     @FXML
@@ -38,13 +42,15 @@ public class MainController {
     private void onNavFeed() {}
 
     @FXML
-    private void onNavProfil() {}
+    private void onNavProfil() {
+        loadView("profile.fxml");
+    }
 
     @FXML
     private void onLogout() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/moodwatch/desktop/login.fxml"));
-            Scene scene = new Scene(loader.load(), 480, 560);
+            Scene scene = new Scene(loader.load(), 840, 560);
             scene.getStylesheets().add(getClass().getResource("/com/moodwatch/desktop/style.css").toExternalForm());
             Stage stage = (Stage) usernameLabel.getScene().getWindow();
             stage.setScene(scene);

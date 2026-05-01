@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.moodwatch.desktop.controller.MainController">
 
     <top>
-        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
-            <Label text="MoodWatch" styleClass="navbar-title"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="usernameLabel" styleClass="username-label"/>
-            <Button text="Çıkış" styleClass="logout-button" onAction="#onLogout"/>
+        <!-- Three-column HBox: fixed-width left | grow center | fixed-width right -->
+        <HBox styleClass="topnav" alignment="CENTER">
+
+            <!-- Left: logo (fixed min width to balance right side) -->
+            <HBox alignment="CENTER_LEFT" minWidth="220">
+                <padding><Insets left="20"/></padding>
+                <Label text="MoodWatch" styleClass="nav-logo"/>
+            </HBox>
+
+            <!-- Center: nav items (fills remaining space) -->
+            <HBox alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
+                <Button text="Keşfet" styleClass="nav-menu-item"
+                        onAction="#onNavFilmAra"/>
+                <Button text="Öneriler" styleClass="nav-menu-item"
+                        onAction="#onNavOneriler"/>
+                <Button text="Feed" styleClass="nav-menu-item"
+                        onAction="#onNavFeed"/>
+                <Button text="İzleme Listesi" styleClass="nav-menu-item"
+                        onAction="#onNavProfil"/>
+            </HBox>
+
+            <!-- Right: avatar + username + logout (fixed min width) -->
+            <HBox alignment="CENTER_RIGHT" spacing="10" minWidth="220">
+                <padding><Insets right="20"/></padding>
+                <StackPane styleClass="nav-avatar-wrap">
+                    <Label fx:id="navAvatarLabel" styleClass="nav-avatar-initial"/>
+                </StackPane>
+                <Label fx:id="usernameLabel" styleClass="nav-username"/>
+                <Button text="Çıkış" styleClass="logout-button" onAction="#onLogout"/>
+            </HBox>
+
         </HBox>
     </top>
-
-    <left>
-        <VBox styleClass="sidebar" spacing="4">
-            <Button text="Film Ara"  styleClass="nav-button" maxWidth="Infinity" onAction="#onNavFilmAra"/>
-            <Button text="Öneriler" styleClass="nav-button" maxWidth="Infinity" onAction="#onNavOneriler"/>
-            <Button text="Feed"     styleClass="nav-button" maxWidth="Infinity" onAction="#onNavFeed"/>
-            <Button text="Profil"   styleClass="nav-button" maxWidth="Infinity" onAction="#onNavProfil"/>
-        </VBox>
-    </left>
 
     <center>
         <StackPane fx:id="centerPane" styleClass="center-pane"/>

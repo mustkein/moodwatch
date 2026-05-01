@@ -4,25 +4,54 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.moodwatch.desktop.controller.LoginController"
-            styleClass="root">
-    <center>
-        <VBox styleClass="login-box" alignment="CENTER" spacing="16">
-            <padding><Insets top="48" right="48" bottom="48" left="48"/></padding>
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.moodwatch.desktop.controller.LoginController"
+      fillHeight="true">
 
-            <Label text="MoodWatch" styleClass="app-title"/>
+    <!-- LEFT: hero panel -->
+    <StackPane styleClass="login-hero" HBox.hgrow="ALWAYS">
+        <Circle radius="260.0" styleClass="hero-circle-lg"
+                translateX="120" translateY="-80"/>
+        <Circle radius="160.0" styleClass="hero-circle-md"
+                translateX="-90" translateY="110"/>
+        <Circle radius="80.0" styleClass="hero-circle-md"
+                translateX="60" translateY="160"/>
 
-            <TextField fx:id="usernameField" promptText="Username" styleClass="input-field" maxWidth="300"/>
-            <PasswordField fx:id="passwordField" promptText="Password" styleClass="input-field" maxWidth="300"/>
-
-            <Button fx:id="loginButton" text="Login" styleClass="login-button"
-                    onAction="#onLoginClick" defaultButton="true" maxWidth="300"/>
-
-            <Label fx:id="errorLabel" styleClass="error-label" visible="false" wrapText="true" maxWidth="300"/>
+        <VBox alignment="CENTER" spacing="14" StackPane.alignment="CENTER">
+            <Label text="MoodWatch" styleClass="hero-wordmark"/>
+            <Label text="Mood'una göre film keşfet" styleClass="hero-tagline"/>
         </VBox>
-    </center>
-</BorderPane>
+    </StackPane>
+
+    <!-- RIGHT: form panel -->
+    <VBox styleClass="login-form-panel" alignment="CENTER" spacing="18"
+          HBox.hgrow="ALWAYS">
+        <padding><Insets top="60" right="60" bottom="60" left="60"/></padding>
+
+        <Label text="Hoş geldin" styleClass="login-welcome"/>
+        <Label text="MoodWatch'a devam etmek için giriş yap" styleClass="login-subtitle"/>
+
+        <VBox spacing="12" maxWidth="Infinity">
+            <TextField fx:id="usernameField" promptText="Kullanıcı adı"
+                       styleClass="input-field" maxWidth="Infinity"/>
+            <PasswordField fx:id="passwordField" promptText="Şifre"
+                          styleClass="input-field" maxWidth="Infinity"/>
+        </VBox>
+
+        <Button fx:id="loginButton" text="Giriş Yap" styleClass="primary-button"
+                onAction="#onLoginClick" defaultButton="true" maxWidth="Infinity"/>
+
+        <Label text="Hesabın yok mu? Kayıt ol" styleClass="login-register-link"
+               maxWidth="Infinity"/>
+
+        <Label fx:id="errorLabel" styleClass="error-label" visible="false"
+               wrapText="true" maxWidth="Infinity"/>
+    </VBox>
+
+</HBox>

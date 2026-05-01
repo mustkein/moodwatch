@@ -1,7 +1,7 @@
 package com.moodwatch.recommendation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moodwatch.recommendation.client.GeminiClient;
+import com.moodwatch.recommendation.client.GroqClient;
 import com.moodwatch.recommendation.dto.RecommendationRequest;
 import com.moodwatch.recommendation.dto.RecommendationResponse;
 import com.moodwatch.recommendation.exception.ExternalApiException;
@@ -12,16 +12,16 @@ import java.util.UUID;
 @Service
 public class RecommendationService {
 
-    private final GeminiClient geminiClient;
+    private final GroqClient groqClient;
     private final ObjectMapper objectMapper;
 
-    public RecommendationService(GeminiClient geminiClient) {
-        this.geminiClient = geminiClient;
+    public RecommendationService(GroqClient groqClient) {
+        this.groqClient = groqClient;
         this.objectMapper = new ObjectMapper();
     }
 
     public RecommendationResponse recommend(UUID userId, RecommendationRequest req) {
-        String json = geminiClient.generateContent(buildPrompt(req));
+        String json = groqClient.generateContent(buildPrompt(req));
         try {
             return objectMapper.readValue(json, RecommendationResponse.class);
         } catch (Exception e) {
