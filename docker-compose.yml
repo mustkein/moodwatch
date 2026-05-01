@@ -44,6 +44,53 @@ services:
       timeout: 5s
       retries: 5
 
+  user-service:
+    build: ./backend/user-service
+    ports:
+      - "8081:8081"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TTL_MINUTES: ${JWT_ACCESS_TTL_MINUTES}
+      JWT_REFRESH_TTL_DAYS: ${JWT_REFRESH_TTL_DAYS}
+    depends_on: [postgres, redis]
+
+  movie-service:
+    build: ./backend/movie-service
+    ports:
+      - "8083:8083"
+    environment:
+      TMDB_API_KEY: ${TMDB_API_KEY}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on: [mongo, redis]
+
+  social-service:
+    build: ./backend/social-service
+    ports:
+      - "8082:8082"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on: [postgres, mongo]
+
+  recommendation-service:
+    build: ./backend/recommendation-service
+    ports:
+      - "8084:8084"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on: [redis]
+
+  gateway:
+    build: ./backend/gateway
+    ports:
+      - "8080:8080"
+    depends_on: [user-service, movie-service, social-service, recommendation-service]
+
 volumes:
   postgres_data:
   mongo_data:
