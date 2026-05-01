@@ -49,6 +49,8 @@ services:
     ports:
       - "8081:8081"
     environment:
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -62,6 +64,8 @@ services:
     ports:
       - "8083:8083"
     environment:
+      REDIS_HOST: redis
+      MONGO_HOST: mongo
       TMDB_API_KEY: ${TMDB_API_KEY}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on: [mongo, redis]
@@ -71,6 +75,9 @@ services:
     ports:
       - "8082:8082"
     environment:
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+      MONGO_HOST: mongo
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -81,6 +88,7 @@ services:
     ports:
       - "8084:8084"
     environment:
+      REDIS_HOST: redis
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on: [redis]

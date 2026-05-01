@@ -14,6 +14,10 @@ spring:
       host: ${MONGO_HOST:localhost}
       port: 27017
       database: moodwatch
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      password: ${REDIS_PASSWORD:}
 
   jpa:
     hibernate:
