@@ -97,6 +97,11 @@ services:
     build: ./backend/gateway
     ports:
       - "8080:8080"
+    environment:
+      USER_SERVICE_HOST: user-service
+      SOCIAL_SERVICE_HOST: social-service
+      MOVIE_SERVICE_HOST: movie-service
+      RECOMMENDATION_SERVICE_HOST: recommendation-service
     depends_on: [user-service, movie-service, social-service, recommendation-service]
 
 volumes:
