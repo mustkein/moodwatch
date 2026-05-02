@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.moodwatch.desktop.controller.WatchlistController"
+      styleClass="profile-view"
+      alignment="TOP_CENTER"
+      spacing="16"
+      fillWidth="true">
+    <padding><Insets top="32" right="40" bottom="32" left="40"/></padding>
+
+    <Label text="İzleme Listem" styleClass="profile-section-title"/>
+
+    <Label fx:id="emptyLabel" text="Henüz film izlemediniz"
+           styleClass="profile-empty" visible="false" managed="false"/>
+
+    <ListView fx:id="watchlistView" VBox.vgrow="ALWAYS" styleClass="watchlist-view"/>
+
+</VBox>

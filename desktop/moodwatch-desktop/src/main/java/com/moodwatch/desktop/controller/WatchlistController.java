@@ -5,14 +5,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -22,94 +18,77 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
-public class RecommendationController {
+public class WatchlistController {
 
     private static final double POSTER_W = 60;
     private static final double POSTER_H = 90;
+    private static final DateTimeFormatter INPUT_FMT = DateTimeFormatter.ISO_DATE_TIME;
+    private static final DateTimeFormatter OUTPUT_FMT =
+            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.forLanguageTag("tr-TR"));
 
-    @FXML private TextArea moodInput;
-    @FXML private Slider minRatingSlider;
-    @FXML private Label minRatingLabel;
-    @FXML private TextField maxRuntimeField;
-    @FXML private Button getRecsButton;
-    @FXML private ListView<ApiClient.RecommendationItem> resultsList;
-    @FXML private Label errorLabel;
+    @FXML private ListView<ApiClient.WatchedMovie> watchlistView;
+    @FXML private Label emptyLabel;
 
     @FXML
     public void initialize() {
-        minRatingSlider.valueProperty().addListener((obs, oldVal, newVal) ->
-                minRatingLabel.setText(String.format("%.1f", newVal.doubleValue())));
-        resultsList.setCellFactory(lv -> new RecCell());
-    }
+        watchlistView.setCellFactory(lv -> new WatchedCell());
 
-    @FXML
-    private void onGetRecommendations() {
-        String mood = moodInput.getText().trim();
-        if (mood.isEmpty()) {
-            showError("Lütfen ruh halinizi yazın.");
-            return;
-        }
-        double minRating = minRatingSlider.getValue();
-        Integer maxRuntime = parseRuntime();
-
-        hideError();
-        getRecsButton.setDisable(true);
-        resultsList.getItems().clear();
+        System.out.println("[Watchlist] loading, userId=" + ApiClient.getInstance().getUserId());
 
         Thread.ofVirtual().start(() -> {
             try {
-                List<ApiClient.RecommendationItem> items =
-                        ApiClient.getInstance().getRecommendations(mood, minRating, maxRuntime);
+                List<ApiClient.WatchedMovie> movies = ApiClient.getInstance().getWatchedMovies();
+                System.out.println("[Watchlist] received " + movies.size() + " movies");
                 Platform.runLater(() -> {
-                    resultsList.getItems().setAll(items);
-                    getRecsButton.setDisable(false);
-                    if (items.isEmpty()) showError("Öneri bulunamadı.");
+                    if (movies.isEmpty()) {
+                        emptyLabel.setVisible(true);
+                        emptyLabel.setManaged(true);
+                        watchlistView.setVisible(false);
+                        watchlistView.setManaged(false);
+                    } else {
+                        watchlistView.getItems().setAll(movies);
+                    }
                 });
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
+                System.out.println("[Watchlist] error: " + e.getMessage());
+                e.printStackTrace();
                 Platform.runLater(() -> {
-                    showError("Hata: " + e.getMessage());
-                    getRecsButton.setDisable(false);
+                    emptyLabel.setText("Liste yüklenemedi");
+                    emptyLabel.setVisible(true);
+                    emptyLabel.setManaged(true);
+                    watchlistView.setVisible(false);
+                    watchlistView.setManaged(false);
                 });
             }
         });
     }
 
-    private Integer parseRuntime() {
-        String text = maxRuntimeField.getText().trim();
-        if (text.isEmpty()) return null;
+    private String formatDate(String watchedAt) {
+        if (watchedAt == null) return "";
         try {
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return null;
+            return LocalDateTime.parse(watchedAt, INPUT_FMT).format(OUTPUT_FMT);
+        } catch (Exception e) {
+            return watchedAt;
         }
     }
 
-    private void showError(String msg) {
-        errorLabel.setText(msg);
-        errorLabel.setVisible(true);
-        errorLabel.setManaged(true);
-    }
-
-    private void hideError() {
-        errorLabel.setVisible(false);
-        errorLabel.setManaged(false);
-    }
-
-    private class RecCell extends ListCell<ApiClient.RecommendationItem> {
+    private class WatchedCell extends ListCell<ApiClient.WatchedMovie> {
 
         private final Rectangle placeholder = new Rectangle(POSTER_W, POSTER_H);
         private final ImageView posterView = new ImageView();
         private final StackPane posterPane;
         private final Label titleLabel = new Label();
-        private final Label metaLabel = new Label();
-        private final Label reasonLabel = new Label();
+        private final Label dateLabel = new Label();
         private final HBox card;
 
         private volatile String currentTitle = null;
 
-        RecCell() {
+        WatchedCell() {
             placeholder.setArcWidth(8);
             placeholder.setArcHeight(8);
             placeholder.setFill(Color.web("#2a2d3e"));
@@ -130,13 +109,9 @@ public class RecommendationController {
             titleLabel.setWrapText(true);
             titleLabel.setMaxWidth(Double.MAX_VALUE);
 
-            metaLabel.getStyleClass().add("rec-card-meta");
+            dateLabel.getStyleClass().add("rec-card-meta");
 
-            reasonLabel.getStyleClass().add("rec-card-reason");
-            reasonLabel.setWrapText(true);
-            reasonLabel.setMaxWidth(Double.MAX_VALUE);
-
-            VBox info = new VBox(6, titleLabel, metaLabel, reasonLabel);
+            VBox info = new VBox(6, titleLabel, dateLabel);
             info.setAlignment(Pos.TOP_LEFT);
             HBox.setHgrow(info, Priority.ALWAYS);
 
@@ -149,7 +124,7 @@ public class RecommendationController {
         }
 
         @Override
-        protected void updateItem(ApiClient.RecommendationItem item, boolean empty) {
+        protected void updateItem(ApiClient.WatchedMovie item, boolean empty) {
             super.updateItem(item, empty);
             if (empty || item == null) {
                 setGraphic(null);
@@ -157,15 +132,13 @@ public class RecommendationController {
                 return;
             }
 
-            titleLabel.setText(item.title());
-            String rating = item.rating() != null ? "★ " + String.format("%.1f", item.rating()) : "";
-            String year = item.year() != null ? "  •  " + item.year() : "";
-            metaLabel.setText(rating + year);
-            reasonLabel.setText(item.reason() != null ? item.reason() : "");
+            String title = item.title() != null ? item.title() : String.valueOf(item.tmdbId());
+            titleLabel.setText(title);
+            dateLabel.setText(formatDate(item.watchedAt()));
 
             posterView.setImage(null);
             placeholder.setVisible(true);
-            currentTitle = item.title();
+            currentTitle = title;
 
             if (item.title() != null) {
                 String snap = item.title();

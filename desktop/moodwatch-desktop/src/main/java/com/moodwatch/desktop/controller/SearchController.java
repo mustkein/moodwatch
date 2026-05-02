@@ -16,12 +16,16 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SearchController {
 
@@ -35,6 +39,8 @@ public class SearchController {
     @FXML private ScrollPane resultsScroll;
     @FXML private GridPane resultsGrid;
 
+    private final Set<Long> watchedTmdbIds = Collections.synchronizedSet(new HashSet<>());
+
     @FXML
     public void initialize() {
         for (int i = 0; i < COLS; i++) {
@@ -46,6 +52,13 @@ public class SearchController {
 
         searchField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) onSearch();
+        });
+
+        Thread.ofVirtual().start(() -> {
+            try {
+                ApiClient.getInstance().getWatchedMovies()
+                        .forEach(w -> watchedTmdbIds.add(w.tmdbId()));
+            } catch (RuntimeException ignored) {}
         });
     }
 
@@ -60,6 +73,13 @@ public class SearchController {
         Thread.ofVirtual().start(() -> {
             try {
                 List<ApiClient.MovieSummary> results = ApiClient.getInstance().searchMovies(query, 0);
+
+                try {
+                    watchedTmdbIds.clear();
+                    ApiClient.getInstance().getWatchedMovies()
+                            .forEach(w -> watchedTmdbIds.add(w.tmdbId()));
+                } catch (RuntimeException ignored) {}
+
                 Platform.runLater(() -> {
                     if (results.isEmpty()) {
                         emptyLabel.setText("Sonuç bulunamadı.");
@@ -116,7 +136,37 @@ public class SearchController {
         Label ratingLabel = new Label(item.rating() != null ? "★ " + String.format("%.1f", item.rating()) : "");
         ratingLabel.getStyleClass().add("movie-card-rating");
 
-        HBox meta = new HBox(8, yearLabel, ratingLabel);
+        Button watchedBtn = new Button("İzledim");
+        watchedBtn.getStyleClass().add("watched-btn");
+
+        boolean alreadyWatched = item.tmdbId() != null && watchedTmdbIds.contains(item.tmdbId());
+        if (alreadyWatched) {
+            watchedBtn.setText("✓ İzlendi");
+            watchedBtn.setDisable(true);
+        } else if (item.tmdbId() != null) {
+            watchedBtn.setOnAction(e -> {
+                watchedBtn.setDisable(true);
+                Thread.ofVirtual().start(() -> {
+                    try {
+                        ApiClient.getInstance().markWatched(item.tmdbId(), item.title());
+                        watchedTmdbIds.add(item.tmdbId());
+                        Platform.runLater(() -> {
+                            watchedBtn.setText("✓ İzlendi");
+                            watchedBtn.setDisable(true);
+                        });
+                    } catch (RuntimeException ex) {
+                        Platform.runLater(() -> watchedBtn.setDisable(false));
+                    }
+                });
+            });
+        } else {
+            watchedBtn.setDisable(true);
+        }
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox meta = new HBox(8, yearLabel, ratingLabel, spacer, watchedBtn);
         meta.setAlignment(Pos.CENTER_LEFT);
 
         VBox card = new VBox(10, posterPane, titleLabel, meta);

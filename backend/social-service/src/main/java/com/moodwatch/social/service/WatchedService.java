@@ -1,10 +1,12 @@
 package com.moodwatch.social.service;
 
+import com.moodwatch.social.dto.WatchedMovieResponse;
 import com.moodwatch.social.dto.WatchedRequest;
 import com.moodwatch.social.entity.WatchedMovie;
 import com.moodwatch.social.repository.WatchedMovieRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,12 +20,23 @@ public class WatchedService {
         this.feedService = feedService;
     }
 
+    public List<WatchedMovieResponse> getWatchedMovies(UUID userId) {
+        return watchedMovieRepository.findByUserId(userId).stream()
+                .map(w -> new WatchedMovieResponse(
+                        w.getTmdbId(),
+                        w.getTitle(),
+                        w.getWatchedAt().toString()))
+                .toList();
+    }
+
     public void markWatched(UUID userId, WatchedRequest request) {
         WatchedMovie watched = new WatchedMovie();
         watched.setUserId(userId);
-        watched.setMovieId(request.movieId());
+        watched.setTmdbId(request.tmdbId());
+        watched.setTitle(request.title());
         watched.setRating(request.rating());
         watchedMovieRepository.save(watched);
-        feedService.recordWatched(userId, request.movieId(), request.rating());
+        Integer ratingInt = request.rating() != null ? request.rating().intValue() : null;
+        feedService.recordWatched(userId, request.tmdbId(), ratingInt);
     }
 }

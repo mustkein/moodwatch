@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -34,21 +35,31 @@
           HBox.hgrow="ALWAYS">
         <padding><Insets top="60" right="60" bottom="60" left="60"/></padding>
 
-        <Label text="Hoş geldin" styleClass="login-welcome"/>
-        <Label text="MoodWatch'a devam etmek için giriş yap" styleClass="login-subtitle"/>
+        <Label fx:id="formTitle" text="Hoş geldin" styleClass="login-welcome"/>
+        <Label fx:id="formSubtitle" text="MoodWatch'a devam etmek için giriş yap"
+               styleClass="login-subtitle"/>
 
         <VBox spacing="12" maxWidth="Infinity">
             <TextField fx:id="usernameField" promptText="Kullanıcı adı"
                        styleClass="input-field" maxWidth="Infinity"/>
+            <TextField fx:id="emailField" promptText="E-posta"
+                       styleClass="input-field" maxWidth="Infinity"
+                       visible="false" managed="false"/>
             <PasswordField fx:id="passwordField" promptText="Şifre"
                           styleClass="input-field" maxWidth="Infinity"/>
         </VBox>
 
         <Button fx:id="loginButton" text="Giriş Yap" styleClass="primary-button"
-                onAction="#onLoginClick" defaultButton="true" maxWidth="Infinity"/>
+                onAction="#onLoginSubmit" defaultButton="true" maxWidth="Infinity"/>
+        <Button fx:id="registerButton" text="Kayıt Ol" styleClass="primary-button"
+                onAction="#onRegisterSubmit" maxWidth="Infinity"
+                visible="false" managed="false"/>
 
-        <Label text="Hesabın yok mu? Kayıt ol" styleClass="login-register-link"
-               maxWidth="Infinity"/>
+        <HBox alignment="CENTER" spacing="6">
+            <Label fx:id="toggleHintLabel" text="Hesabın yok mu?" styleClass="login-register-hint"/>
+            <Hyperlink fx:id="toggleLink" text="Kayıt Ol" onAction="#onToggleMode"
+                       styleClass="register-link"/>
+        </HBox>
 
         <Label fx:id="errorLabel" styleClass="error-label" visible="false"
                wrapText="true" maxWidth="Infinity"/>

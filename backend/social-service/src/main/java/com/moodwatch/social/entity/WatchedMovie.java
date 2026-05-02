@@ -1,7 +1,7 @@
 package com.moodwatch.social.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,17 +15,19 @@ public class WatchedMovie {
     @Column(nullable = false)
     private UUID userId;
 
-    @Column(nullable = false)
-    private Long movieId;
+    @Column(name = "tmdb_id", nullable = false)
+    private Long tmdbId;
 
-    private Integer rating;
+    private String title;
+
+    private Double rating;
 
     @Column(nullable = false, updatable = false)
-    private Instant watchedAt;
+    private LocalDateTime watchedAt;
 
     @PrePersist
     void onCreate() {
-        this.watchedAt = Instant.now();
+        this.watchedAt = LocalDateTime.now();
     }
 
     public UUID getId() { return id; }
@@ -33,11 +35,14 @@ public class WatchedMovie {
     public UUID getUserId() { return userId; }
     public void setUserId(UUID userId) { this.userId = userId; }
 
-    public Long getMovieId() { return movieId; }
-    public void setMovieId(Long movieId) { this.movieId = movieId; }
+    public Long getTmdbId() { return tmdbId; }
+    public void setTmdbId(Long tmdbId) { this.tmdbId = tmdbId; }
 
-    public Integer getRating() { return rating; }
-    public void setRating(Integer rating) { this.rating = rating; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public Instant getWatchedAt() { return watchedAt; }
+    public Double getRating() { return rating; }
+    public void setRating(Double rating) { this.rating = rating; }
+
+    public LocalDateTime getWatchedAt() { return watchedAt; }
 }

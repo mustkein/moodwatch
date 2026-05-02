@@ -42,6 +42,11 @@ public class MainController {
     private void onNavFeed() {}
 
     @FXML
+    private void onNavWatchlist() {
+        loadView("watchlist.fxml");
+    }
+
+    @FXML
     private void onNavProfil() {
         loadView("profile.fxml");
     }

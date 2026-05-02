@@ -29,7 +29,7 @@
                 <Button text="Feed" styleClass="nav-menu-item"
                         onAction="#onNavFeed"/>
                 <Button text="İzleme Listesi" styleClass="nav-menu-item"
-                        onAction="#onNavProfil"/>
+                        onAction="#onNavWatchlist"/>
             </HBox>
 
             <!-- Right: avatar + username + logout (fixed min width) -->
