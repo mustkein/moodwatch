@@ -218,6 +218,19 @@ public class ApiClient {
         }
     }
 
+    public void removeWatched(long tmdbId) {
+        try {
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "/api/watched/" + tmdbId))
+                    .header("Authorization", "Bearer " + authToken);
+            if (userId != null) builder.header("X-User-Id", userId);
+            HttpRequest request = builder.DELETE().build();
+            http.send(request, HttpResponse.BodyHandlers.discarding());
+        } catch (Exception e) {
+            throw new RuntimeException("removeWatched error", e);
+        }
+    }
+
     public java.util.List<RecommendationItem> getRecommendations(String mood, double minRating, Integer maxRuntime) {
         try {
             java.util.Map<String, Object> bodyMap = new java.util.HashMap<>();

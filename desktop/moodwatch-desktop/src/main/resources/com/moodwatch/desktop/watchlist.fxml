@@ -7,7 +7,7 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.moodwatch.desktop.controller.WatchlistController"
-      styleClass="profile-view"
+      styleClass="search-view"
       alignment="TOP_CENTER"
       spacing="16"
       fillWidth="true">
@@ -18,6 +18,6 @@
     <Label fx:id="emptyLabel" text="Henüz film izlemediniz"
            styleClass="profile-empty" visible="false" managed="false"/>
 
-    <ListView fx:id="watchlistView" VBox.vgrow="ALWAYS" styleClass="watchlist-view"/>
+    <ListView fx:id="watchlistView" VBox.vgrow="ALWAYS" styleClass="results-list"/>
 
 </VBox>

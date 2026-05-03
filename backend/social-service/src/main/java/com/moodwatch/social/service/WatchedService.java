@@ -29,6 +29,10 @@ public class WatchedService {
                 .toList();
     }
 
+    public void removeWatched(UUID userId, Long tmdbId) {
+        watchedMovieRepository.deleteByUserIdAndTmdbId(userId, tmdbId);
+    }
+
     public void markWatched(UUID userId, WatchedRequest request) {
         WatchedMovie watched = new WatchedMovie();
         watched.setUserId(userId);

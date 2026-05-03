@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -84,6 +85,7 @@ public class WatchlistController {
         private final StackPane posterPane;
         private final Label titleLabel = new Label();
         private final Label dateLabel = new Label();
+        private final Button removeBtn = new Button("Kaldır");
         private final HBox card;
 
         private volatile String currentTitle = null;
@@ -105,13 +107,15 @@ public class WatchlistController {
             posterPane.setMinWidth(POSTER_W);
             posterPane.setMaxWidth(POSTER_W);
 
-            titleLabel.getStyleClass().add("rec-card-title");
+            titleLabel.getStyleClass().add("movie-title");
             titleLabel.setWrapText(true);
             titleLabel.setMaxWidth(Double.MAX_VALUE);
 
-            dateLabel.getStyleClass().add("rec-card-meta");
+            dateLabel.getStyleClass().add("movie-meta");
 
-            VBox info = new VBox(6, titleLabel, dateLabel);
+            removeBtn.getStyleClass().add("logout-btn");
+
+            VBox info = new VBox(6, titleLabel, dateLabel, removeBtn);
             info.setAlignment(Pos.TOP_LEFT);
             HBox.setHgrow(info, Priority.ALWAYS);
 
@@ -139,6 +143,21 @@ public class WatchlistController {
             posterView.setImage(null);
             placeholder.setVisible(true);
             currentTitle = title;
+
+            removeBtn.setDisable(false);
+            removeBtn.setOnAction(e -> {
+                removeBtn.setDisable(true);
+                long tmdbId = item.tmdbId();
+                Thread.ofVirtual().start(() -> {
+                    try {
+                        ApiClient.getInstance().removeWatched(tmdbId);
+                        SearchController.removeFromWatched(tmdbId);
+                        Platform.runLater(() -> getListView().getItems().remove(item));
+                    } catch (RuntimeException ex) {
+                        Platform.runLater(() -> removeBtn.setDisable(false));
+                    }
+                });
+            });
 
             if (item.title() != null) {
                 String snap = item.title();

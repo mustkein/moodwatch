@@ -31,6 +31,17 @@ public class WatchedController {
         return ResponseEntity.ok(ApiResponse.ok(watchedService.getWatchedMovies(userId)));
     }
 
+    @DeleteMapping("/{tmdbId}")
+    public ResponseEntity<ApiResponse<Void>> removeWatched(
+            @RequestHeader(value = "X-User-Id", required = false) UUID userId,
+            @PathVariable Long tmdbId) {
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.fail("UNAUTHORIZED", "X-User-Id header required"));
+        }
+        watchedService.removeWatched(userId, tmdbId);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> markWatched(
             @RequestHeader(value = "X-User-Id", required = false) UUID userId,

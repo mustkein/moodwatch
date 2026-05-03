@@ -537,3 +537,61 @@
     -fx-tick-label-fill: #5a5e72;
     -fx-font-size: 10px;
 }
+
+/* ===== WATCHLIST VIEW ===== */
+
+.results-list {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.results-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 10 0;
+}
+
+.results-list .list-cell:selected {
+    -fx-background-color: transparent;
+}
+
+.results-list .list-cell:hover {
+    -fx-background-color: transparent;
+}
+
+.movie-cell {
+    -fx-background-color: #1a1d27;
+    -fx-background-radius: 10;
+    -fx-border-color: #2a2d3e;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+.movie-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+.movie-meta {
+    -fx-text-fill: #8a8d9a;
+    -fx-font-size: 13px;
+}
+
+.logout-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #ff6b6b;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-text-fill: #ff6b6b;
+    -fx-font-size: 12px;
+    -fx-padding: 5 12;
+    -fx-cursor: hand;
+}
+
+.logout-btn:hover {
+    -fx-background-color: #ff6b6b;
+    -fx-text-fill: #131417;
+}

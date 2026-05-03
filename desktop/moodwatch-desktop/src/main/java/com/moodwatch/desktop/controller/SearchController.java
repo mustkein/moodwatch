@@ -39,7 +39,11 @@ public class SearchController {
     @FXML private ScrollPane resultsScroll;
     @FXML private GridPane resultsGrid;
 
-    private final Set<Long> watchedTmdbIds = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<Long> watchedTmdbIds = Collections.synchronizedSet(new HashSet<>());
+
+    public static void removeFromWatched(long tmdbId) {
+        watchedTmdbIds.remove(tmdbId);
+    }
 
     @FXML
     public void initialize() {

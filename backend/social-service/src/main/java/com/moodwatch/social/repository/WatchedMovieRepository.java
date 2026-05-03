@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, UUID> {
     List<WatchedMovie> findByUserId(UUID userId);
+    void deleteByUserIdAndTmdbId(UUID userId, Long tmdbId);
 }
