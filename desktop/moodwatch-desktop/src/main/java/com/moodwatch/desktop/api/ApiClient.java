@@ -39,6 +39,22 @@ public class ApiClient {
     public record PagedResult<T>(java.util.List<T> items, int page, int totalPages, long totalItems) {}
     public record RecommendationItem(String title, String reason, Double rating, String year) {}
     public record RecommendationResponse(java.util.List<RecommendationItem> items) {}
+    public record CastMember(String name, String character, String profileUrl) {}
+
+    public record MovieDetailDto(
+            Long tmdbId,
+            String title,
+            String overview,
+            String posterUrl,
+            String backdropUrl,
+            Double rating,
+            String releaseDate,
+            Integer runtime,
+            java.util.List<String> genres,
+            String trailerKey,
+            String trailerUrl,
+            java.util.List<CastMember> cast
+    ) {}
 
     private record ApiResponse<T>(boolean success, T data, String error) {}
 
@@ -228,6 +244,33 @@ public class ApiClient {
             http.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
             throw new RuntimeException("removeWatched error", e);
+        }
+    }
+
+    public MovieDetailDto getMovieDetail(long tmdbId) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "/api/movies/" + tmdbId))
+                    .header("Authorization", "Bearer " + authToken)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new RuntimeException("Movie detail failed: " + response.statusCode());
+            }
+
+            ApiResponse<MovieDetailDto> result = mapper.readValue(
+                    response.body(),
+                    new TypeReference<ApiResponse<MovieDetailDto>>() {}
+            );
+            return result.data();
+
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Movie detail error", e);
         }
     }
 

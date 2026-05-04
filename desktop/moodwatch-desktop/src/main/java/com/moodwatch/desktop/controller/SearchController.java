@@ -178,6 +178,13 @@ public class SearchController {
         card.setPadding(new Insets(10));
         card.setMaxWidth(Double.MAX_VALUE);
 
+        if (item.tmdbId() != null) {
+            card.setOnMouseClicked(e -> {
+                MainController main = MainController.getInstance();
+                if (main != null) main.loadDetail(item.tmdbId());
+            });
+        }
+
         if (item.posterUrl() != null) {
             Thread.ofVirtual().start(() -> {
                 try {

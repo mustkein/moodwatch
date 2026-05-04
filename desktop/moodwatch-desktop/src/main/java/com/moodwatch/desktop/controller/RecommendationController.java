@@ -6,13 +6,14 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -22,6 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class RecommendationController {
@@ -34,14 +37,25 @@ public class RecommendationController {
     @FXML private Label minRatingLabel;
     @FXML private TextField maxRuntimeField;
     @FXML private Button getRecsButton;
+    @FXML private ComboBox<String> sortCombo;
     @FXML private ListView<ApiClient.RecommendationItem> resultsList;
     @FXML private Label errorLabel;
+
+    private List<ApiClient.RecommendationItem> allItems = new ArrayList<>();
 
     @FXML
     public void initialize() {
         minRatingSlider.valueProperty().addListener((obs, oldVal, newVal) ->
                 minRatingLabel.setText(String.format("%.1f", newVal.doubleValue())));
         resultsList.setCellFactory(lv -> new RecCell());
+        sortCombo.getItems().addAll(
+                "Varsayılan",
+                "Puan: Yüksek → Düşük",
+                "Puan: Düşük → Yüksek",
+                "İsim: A → Z",
+                "İsim: Z → A"
+        );
+        sortCombo.setValue("Varsayılan");
     }
 
     @FXML
@@ -57,15 +71,20 @@ public class RecommendationController {
         hideError();
         getRecsButton.setDisable(true);
         resultsList.getItems().clear();
+        allItems.clear();
 
         Thread.ofVirtual().start(() -> {
             try {
                 List<ApiClient.RecommendationItem> items =
                         ApiClient.getInstance().getRecommendations(mood, minRating, maxRuntime);
                 Platform.runLater(() -> {
-                    resultsList.getItems().setAll(items);
+                    allItems = new ArrayList<>(items);
+                    applySort();
+                    boolean hasResults = !items.isEmpty();
+                    sortCombo.setVisible(hasResults);
+                    sortCombo.setManaged(hasResults);
                     getRecsButton.setDisable(false);
-                    if (items.isEmpty()) showError("Öneri bulunamadı.");
+                    if (!hasResults) showError("Öneri bulunamadı.");
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
@@ -74,6 +93,31 @@ public class RecommendationController {
                 });
             }
         });
+    }
+
+    @FXML
+    private void onSortChanged() {
+        applySort();
+    }
+
+    private void applySort() {
+        if (allItems.isEmpty()) return;
+        List<ApiClient.RecommendationItem> sorted = new ArrayList<>(allItems);
+        String selected = sortCombo.getValue();
+        if ("Puan: Yüksek → Düşük".equals(selected)) {
+            sorted.sort(Comparator.comparingDouble((ApiClient.RecommendationItem i) ->
+                    i.rating() != null ? i.rating() : 0.0).reversed());
+        } else if ("Puan: Düşük → Yüksek".equals(selected)) {
+            sorted.sort(Comparator.comparingDouble((ApiClient.RecommendationItem i) ->
+                    i.rating() != null ? i.rating() : 0.0));
+        } else if ("İsim: A → Z".equals(selected)) {
+            sorted.sort(Comparator.comparing((ApiClient.RecommendationItem i) ->
+                    i.title() != null ? i.title() : ""));
+        } else if ("İsim: Z → A".equals(selected)) {
+            sorted.sort(Comparator.comparing((ApiClient.RecommendationItem i) ->
+                    i.title() != null ? i.title() : "").reversed());
+        }
+        resultsList.getItems().setAll(sorted);
     }
 
     private Integer parseRuntime() {

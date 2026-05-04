@@ -12,12 +12,21 @@ import java.io.IOException;
 
 public class MainController {
 
+    private static MainController instance;
+
     @FXML private Label usernameLabel;
     @FXML private Label navAvatarLabel;
     @FXML private StackPane centerPane;
 
+    private String lastView = "search.fxml";
+
+    public static MainController getInstance() {
+        return instance;
+    }
+
     @FXML
     public void initialize() {
+        instance = this;
         loadView("search.fxml");
     }
 
@@ -64,7 +73,25 @@ public class MainController {
         }
     }
 
-    private void loadView(String fxml) {
+    public void loadDetail(long tmdbId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/moodwatch/desktop/detail.fxml"));
+            Node view = loader.load();
+            DetailController ctrl = loader.getController();
+            ctrl.setMovie(tmdbId);
+            centerPane.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void goBack() {
+        loadView(lastView);
+    }
+
+    void loadView(String fxml) {
+        lastView = fxml;
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/moodwatch/desktop/" + fxml));

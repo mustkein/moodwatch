@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.moodwatch.desktop.controller.DetailController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="detail-scroll">
+
+    <VBox styleClass="detail-view">
+
+        <!-- Backdrop: full width, 240 px -->
+        <StackPane fx:id="backdropPane" prefHeight="240" maxHeight="240" minHeight="240">
+            <ImageView fx:id="backdropView" fitHeight="240" preserveRatio="false"/>
+            <Region styleClass="backdrop-overlay" maxWidth="Infinity" maxHeight="Infinity"/>
+            <Button text="← Geri" styleClass="back-btn" onAction="#onBack"
+                    StackPane.alignment="TOP_LEFT">
+                <StackPane.margin><Insets top="16" left="16"/></StackPane.margin>
+            </Button>
+        </StackPane>
+
+        <!-- Content below backdrop -->
+        <VBox styleClass="detail-content" spacing="16">
+            <padding><Insets top="24" right="24" bottom="32" left="24"/></padding>
+
+            <!-- Poster + info row -->
+            <HBox spacing="20" alignment="TOP_LEFT">
+
+                <!-- Poster with rounded clip -->
+                <StackPane>
+                    <Rectangle width="140" height="210" arcWidth="12" arcHeight="12"
+                               fill="#2a2d3e"/>
+                    <ImageView fx:id="posterView" fitWidth="140" fitHeight="210"
+                               preserveRatio="false">
+                        <clip>
+                            <Rectangle width="140" height="210" arcWidth="12" arcHeight="12"/>
+                        </clip>
+                    </ImageView>
+                </StackPane>
+
+                <!-- Info column -->
+                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                    <Label fx:id="titleLabel" styleClass="detail-title" wrapText="true"/>
+                    <Label fx:id="metaLabel" styleClass="detail-meta"/>
+                    <FlowPane fx:id="genreBox" hgap="6" vgap="4"/>
+                    <Label fx:id="overviewLabel" styleClass="detail-overview" wrapText="true"/>
+                </VBox>
+
+            </HBox>
+
+            <Separator styleClass="detail-separator"/>
+
+            <!-- Cast section -->
+            <Label text="OYUNCULAR" styleClass="detail-section-title"/>
+            <ScrollPane fx:id="castScroll" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER"
+                        prefHeight="144" maxHeight="144" styleClass="cast-scroll">
+                <HBox fx:id="castBox" spacing="12" alignment="CENTER_LEFT">
+                    <padding><Insets top="4" right="8" bottom="4" left="0"/></padding>
+                </HBox>
+            </ScrollPane>
+
+            <!-- Trailer button (shown only when trailer exists) -->
+            <Button fx:id="trailerButton" text="▶ Fragmanı İzle" styleClass="trailer-btn"
+                    onAction="#onTrailer" visible="false" managed="false"
+                    maxWidth="Infinity"/>
+
+        </VBox>
+    </VBox>
+</ScrollPane>

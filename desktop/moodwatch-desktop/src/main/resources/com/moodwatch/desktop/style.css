@@ -311,6 +311,46 @@
     -fx-alignment: center;
 }
 
+/* ===== SORT COMBO ===== */
+
+.sort-combo {
+    -fx-background-color: #1e2130;
+    -fx-background-radius: 8;
+    -fx-border-color: #2a2d3e;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+}
+
+.sort-combo .list-cell {
+    -fx-background-color: #1e2130;
+    -fx-text-fill: #e0e2ec;
+    -fx-font-size: 13px;
+    -fx-padding: 6 12;
+}
+
+.sort-combo .list-cell:hover {
+    -fx-background-color: #2a2d3e;
+}
+
+.sort-combo .list-cell:selected {
+    -fx-background-color: rgba(0,200,150,0.15);
+    -fx-text-fill: #00c896;
+}
+
+.sort-combo:focused {
+    -fx-border-color: #00c896;
+}
+
+.sort-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.sort-combo .arrow-button .arrow {
+    -fx-background-color: #8a8d9a;
+}
+
 /* ===== RECOMMENDATION VIEW ===== */
 
 .rec-view {
@@ -594,4 +634,152 @@
 .logout-btn:hover {
     -fx-background-color: #ff6b6b;
     -fx-text-fill: #131417;
+}
+
+/* ===== DETAIL VIEW ===== */
+
+.detail-view {
+    -fx-background-color: #131417;
+    -fx-fill-width: true;
+}
+
+.backdrop-overlay {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, rgba(0,0,0,0.15), rgba(0,0,0,0.75));
+}
+
+.detail-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 4, 0, 0, 1);
+}
+
+.detail-rating {
+    -fx-text-fill: #00c896;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 4, 0, 0, 1);
+}
+
+.detail-overview {
+    -fx-text-fill: #c0c2cc;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 2;
+}
+
+.detail-meta {
+    -fx-text-fill: #8a8d9a;
+    -fx-font-size: 13px;
+}
+
+.genre-chip {
+    -fx-background-color: rgba(0,200,150,0.15);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(0,200,150,0.4);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-text-fill: #00c896;
+    -fx-font-size: 11px;
+    -fx-padding: 3 10;
+}
+
+.back-btn {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-background-radius: 6;
+    -fx-border-color: rgba(255,255,255,0.3);
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.back-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-border-color: rgba(255,255,255,0.6);
+}
+
+.trailer-btn {
+    -fx-background-color: linear-gradient(to right, #00c896, #00a07a);
+    -fx-background-radius: 8;
+    -fx-text-fill: #131417;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.trailer-btn:hover {
+    -fx-background-color: linear-gradient(to right, #00e6b0, #00c896);
+    -fx-effect: dropshadow(gaussian, #00c896, 12, 0.25, 0, 2);
+}
+
+.detail-scroll {
+    -fx-background-color: #131417;
+    -fx-background: #131417;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.detail-scroll > .viewport {
+    -fx-background-color: #131417;
+}
+
+.detail-content {
+    -fx-background-color: #131417;
+}
+
+.detail-section-title {
+    -fx-text-fill: #8a8d9a;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.detail-separator > .line {
+    -fx-background-color: #2a2d3e;
+    -fx-pref-height: 1;
+    -fx-max-height: 1;
+    -fx-border-width: 0;
+}
+
+.cast-scroll {
+    -fx-background-color: #131417;
+    -fx-background: #131417;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.cast-scroll > .viewport {
+    -fx-background-color: #131417;
+}
+
+.cast-scroll > .scroll-bar:horizontal > .track {
+    -fx-background-color: #1e2130;
+}
+
+.cast-scroll > .scroll-bar:horizontal > .thumb {
+    -fx-background-color: #2a2d3e;
+    -fx-background-radius: 4;
+}
+
+.cast-card {
+    -fx-background-color: transparent;
+}
+
+.cast-name {
+    -fx-text-fill: #e0e2ec;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.cast-character {
+    -fx-text-fill: #5a5e72;
+    -fx-font-size: 10px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }

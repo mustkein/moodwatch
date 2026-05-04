@@ -1,6 +1,7 @@
 package com.moodwatch.movie.controller;
 
 import com.moodwatch.movie.dto.ApiResponse;
+import com.moodwatch.movie.dto.MovieDetailDto;
 import com.moodwatch.movie.dto.MovieSummary;
 import com.moodwatch.movie.dto.PagedResult;
 import com.moodwatch.movie.service.MovieService;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,5 +35,10 @@ public class MovieController {
             @RequestParam @NotBlank String q,
             @RequestParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(ApiResponse.ok(movieService.search(q, page)));
+    }
+
+    @GetMapping("/{tmdbId}")
+    public ResponseEntity<ApiResponse<MovieDetailDto>> getDetail(@PathVariable long tmdbId) {
+        return ResponseEntity.ok(ApiResponse.ok(movieService.getMovieDetail(tmdbId)));
     }
 }
