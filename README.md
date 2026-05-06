@@ -167,8 +167,8 @@ graph TD
 
 | Kullanıcı | Rol |
 |---|---|
-| [Yusuf Can Müştekin](https://github.com/mustke) | Backend & Mikroservis Mimarisi |
-| [Abdul Kerem Varlı](https://github.com/keremvarlii) | Backend & JavaFX İstemci |
+| [mustkein](https://github.com/mustke) | Backend & Mikroservis Mimarisi |
+| [keremvarlii](https://github.com/keremvarlii) | Backend & JavaFX İstemci |
 
 ---
 
